@@ -4,6 +4,7 @@
   "description": "Discord bot that praises (or scolds) you for in-game achievements",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
