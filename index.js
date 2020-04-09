@@ -1,16 +1,41 @@
-require('dotenv').config();
+const DOTENV = require('dotenv');
+const ASSERT = require('assert');
 
-const DISCORD = require('discord.js');
-const client = new DISCORD.Client();
+const MOMENT = require('moment');
+const MONGO = require('./mongo-util.js');
+const DISCORD = require('./discord-util.js');
+const SCHEMAS = require('./schemas.js');
 
-client.on('ready', () => {
-    console.log(`Logged in as ${client.user.tag}`);
-});
+// const DIALOGFLOW = require('@google-cloud/dialogflow');
 
-client.on('message', msg => {
-    if(msg.content === 'ping') {
-        msg.reply('pong');
+
+const STARTUP = new Date();
+DOTENV.config();
+
+const construct_models = async (mongo_connection) => {
+    const model_mapping = {
+        "User": mongo_connection.model("User", SCHEMAS.UserSchema),
     }
-})
 
-client.login(process.env.DISCORD_TOKEN);
+    return model_mapping;
+};
+
+const construct_message_handler = async (model_mapping) => {
+    return async (command, message) => {
+        if (message.content.includes('stats')) {
+            const startup_since = MOMENT(STARTUP).fromNow();
+            message.reply(`The bots started ${startup_since}`);
+        }
+
+        return;
+    }
+};
+
+MONGO.connection_factory(process.env.MONGO_URL)
+    .then(construct_models)
+    .then(construct_message_handler)
+    .then((handler) => DISCORD.connection_factory(process.env.DISCORD_TOKEN, handler))
+    .catch((error) => {
+        console.error(error);
+        process.exit(1);
+    });

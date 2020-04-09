@@ -18,7 +18,10 @@
   "author": "Pingu Team",
   "license": "MIT",
   "dependencies": {
+    "dialogflow": "^1.2.0",
     "discord.js": "^12.1.1",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "moment": "^2.24.0",
+    "mongoose": "^5.9.7"
   }
 }
