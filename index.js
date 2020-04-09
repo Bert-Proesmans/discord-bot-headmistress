@@ -1,15 +1,14 @@
 const DOTENV = require('dotenv');
 const ASSERT = require('assert');
 
-const MOMENT = require('moment');
 const MONGO = require('./mongo-util.js');
 const DISCORD = require('./discord-util.js');
 const SCHEMAS = require('./schemas.js');
+const UTIL = require('./util.js');
+
+const INFO_HANDLERS = require('./commands/info.js');
 
 // const DIALOGFLOW = require('@google-cloud/dialogflow');
-
-
-const STARTUP = new Date();
 DOTENV.config();
 
 const construct_models = async (mongo_connection) => {
@@ -21,14 +20,21 @@ const construct_models = async (mongo_connection) => {
 };
 
 const construct_message_handler = async (model_mapping) => {
+    // TODO(BP); Load commands through name and aliases!
+    const commands = {
+        "ping": INFO_HANDLERS.ping,
+        "stat": INFO_HANDLERS.stat,
+    };
+    var commandKeys = Object.keys(commands);
+    
     return async (command, message) => {
-        if (message.content.includes('stats')) {
-            const startup_since = MOMENT(STARTUP).fromNow();
-            message.reply(`The bots started ${startup_since}`);
-        }
-
-        return;
-    }
+        // TODO(BP); Use command argument
+        UTIL.asyncForEach(commandKeys, async (command) => {
+            if(message.content.includes(command)) {
+                await commands[command].run(message);
+            }
+        });
+    };
 };
 
 MONGO.connection_factory(process.env.MONGO_URL)
