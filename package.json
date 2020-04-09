@@ -1,0 +1,23 @@
+{
+  "name": "discord-bot-headmistress",
+  "version": "0.0.1",
+  "description": "Discord bot that praises (or scolds) you for in-game achievements",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "riot",
+    "league",
+    "of",
+    "legends"
+  ],
+  "author": "Pingu Team",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^12.1.1",
+    "dotenv": "^8.2.0"
+  }
+}
